@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDN 008 Purnama - Sekolah Dasar Negeri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #3B82F6 0%, #FCD34D 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        
+        .section-fade {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .section-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hero-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-button {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feature-item {
+            transition: all 0.3s ease;
+        }
+
+        .feature-item.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="min-h-full bg-gray-50">
+  <!-- Header Section -->
+  <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+   <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between py-4">
+     <div class="flex items-center space-x-4">
+      <!-- Logos -->
+      <img src="https://iili.io/fHTzKrv.png" alt="Logo Kota Dumai" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/CCCCCC/333333?text=Logo'; this.alt='Logo Kota Dumai gagal dimuat';">
+      <img src="https://iili.io/fHTxR5B.png" alt="SDN 008 Purnama" class="w-12 h-12 object-contain rounded" onerror="this.src='https://placehold.co/48x48/3B82F6/FFFFFF?text=SD'; this.alt='Gambar sekolah gagal dimuat';">
+      <img src="https://iili.io/fHTofna.png" alt="Logo SDN 008 Purnama" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/FCD34D/333333?text=008'; this.alt='Logo sekolah gagal dimuat';">
+      
+      <!-- School Name and Tagline -->
+      <div>
+       <h1 id="school-name" class="text-xl font-bold">SDN 008 Purnama</h1>
+       <p id="school-tagline" class="text-sm opacity-90">Mencerdaskan Generasi Bangsa</p>
+      </div>
+     </div>
+     
+     <!-- Desktop Navigation -->
+     <nav id="main-navigation" class="hidden lg:flex space-x-1">
+      <!-- Navigation will be dynamically generated -->
+     </nav>
+     
+     <!-- Mobile Menu Button -->
+     <div class="flex items-center space-x-2">
+      <button id="mobile-menu-btn" class="lg:hidden p-2">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+       </svg>
+      </button>
+     </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden hidden pb-4">
+     <div id="mobile-navigation" class="flex flex-col space-y-2">
+      <!-- Mobile navigation will be dynamically generated -->
+     </div>
+    </div>
+   </div>
+  </header>
+  
+  <!-- Login Modal -->
+  <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+   <div class="flex items-center justify-center min-h-full p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+     <div class="px-6 py-4 border-b">
+      <h2 class="text-xl font-bold text-gray-800">🔐 Login Admin</h2>
+     </div>
+     <div class="p-6">
+      <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+       Username atau password salah!
+      </div>
+      <form id="login-form">
+       <div class="mb-4">
+        <label for="admin-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+        <input type="text" id="admin-username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan username admin" required>
+       </div>
+       <div class="mb-6">
+        <label for="admin-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+        <input type="password" id="admin-password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan password admin" required>
+       </div>
+       <div class="flex gap-3">
+        <button type="submit" id="login-btn" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"> 🔑 Login </button>
+        <button type="button" id="cancel-login" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"> ❌ Batal </button>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  
+  <!-- Admin Panel Modal -->
+  <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+   <div class="flex items-center justify-center min-h-full p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+     <!-- Admin Modal Header -->
+     <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+       <h2 class="text-2xl font-bold text-gray-800">🛠️ Admin Panel - Kelola Website SDN 008 Purnama</h2>
+       <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-semibold">✓ Login sebagai Admin</span>
+      </div>
+      <div class="flex items-center space-x-3">
+       <button id="logout-btn" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors"> 🚪 Logout </button>
+       <button id="close-admin" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+      </div>
+     </div>
+     
+     <!-- Admin Modal Content -->
+     <div class="p-6">
+      <!-- Admin Navigation Tabs -->
+      <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
+       <button class="admin-tab-btn active bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium" data-tab="dashboard"> 🏠 Dashboard </button>
+       <button class="admin-tab-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium" data-tab="kelola-fitur"> ⚙️ Kelola Fitur </button>
+       <div id="dynamic-admin-tabs">
+        <!-- Dynamic tabs will be generated here -->
+       </div>
+      </div>
+      
+      <!-- Admin Tab Content: Dashboard -->
+      <div id="tab-dashboard" class="admin-tab-content">
+       <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <!-- Stats Cards -->
+        <div class="bg-blue-50 p-6 rounded-lg text-center">
+         <div class="text-3xl mb-2">📊</div>
+         <h3 class="text-xl font-semibold text-blue-600">Total Data</h3>
+         <p id="total-data" class="text-2xl font-bold text-gray-800">0</p>
+        </div>
+        <div class="bg-green-50 p-6 rounded-lg text-center">
+         <div class="text-3xl mb-2">🎯</div>
+         <h3 class="text-xl font-semibold text-green-600">Fitur Aktif</h3>
+         <p id="active-features" class="text-2xl font-bold text-gray-800">0</p>
+        </div>
+        <div class="bg-yellow-50 p-6 rounded-lg text-center">
+         <div class="text-3xl mb-2">📅</div>
+         <h3 class="text-xl font-semibold text-yellow-600">Update Terakhir</h3>
+         <p id="last-update" class="text-sm font-medium text-gray-600">-</p>
+        </div>
+       </div>
+       <!-- Quick Guide -->
+       <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-4">🚀 Panduan Cepat</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+         <div class="space-y-3">
+          <h4 class="font-medium text-gray-800">📝 Kelola Konten:</h4>
+          <ul class="text-sm text-gray-600 space-y-1">
+           <li>• Klik tab fitur yang ingin dikelola</li>
+           <li>• Gunakan tombol "Tambah" untuk data baru</li>
+           <li>• Klik "Edit" untuk mengubah data</li>
+           <li>• Upload gambar dari URL atau file</li>
+          </ul>
+         </div>
+         <div class="space-y-3">
+          <h4 class="font-medium text-gray-800">⚙️ Kelola Fitur:</h4>
+          <ul class="text-sm text-gray-600 space-y-1">
+           <li>• Tambah fitur baru sesuai kebutuhan</li>
+           <li>• Aktifkan/nonaktifkan fitur</li>
+           <li>• Atur urutan tampilan menu</li>
+           <li>• Hapus fitur yang tidak diperlukan</li>
+          </ul>
+         </div>
+        </div>
+       </div>
+      </div>
+      
+      <!-- Admin Tab Content: Kelola Fitur -->
+      <div id="tab-kelola-fitur" class="admin-tab-content hidden">
+       <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold">⚙️ Kelola Fitur Website</h3>
+        <button id="add-feature" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"> ➕ Tambah Fitur Baru </button>
+       </div>
+       
+       <!-- Form Tambah/Edit Fitur -->
+       <div id="feature-form" class="bg-gray-50 p-6 rounded-lg mb-6 hidden">
+        <h4 class="font-semibold mb-4">Form Fitur</h4>
+        <div class="grid md:grid-cols-2 gap-4">
+         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nama Fitur</label>
+          <input type="text" id="feature-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: Alumni, Prestasi, dll">
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Ikon Emoji</label>
+          <input type="text" id="feature-icon" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="🎓 (emoji untuk menu)">
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ID Fitur (URL)</label>
+          <input type="text" id="feature-id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="alumni (huruf kecil, tanpa spasi)">
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Urutan Menu</label>
+          <input type="number" id="feature-order" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1, 2, 3, dst" min="1">
+         </div>
+        </div>
+        <div class="mt-4">
+         <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Fitur</label>
+         <textarea id="feature-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Deskripsi singkat tentang fitur ini..."></textarea>
+        </div>
+        <div class="mt-4">
+         <label class="flex items-center space-x-2">
+          <input type="checkbox" id="feature-active" class="rounded">
+          <span class="text-sm font-medium text-gray-700">Aktifkan fitur ini</span>
+         </label>
+        </div>
+        <div class="flex gap-3 mt-6">
+         <button id="save-feature" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"> 💾 Simpan Fitur </button>
+         <button id="cancel-feature" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"> ❌ Batal </button>
+        </div>
+       </div>
+       
+       <!-- Daftar Fitur -->
+       <div class="space-y-4">
+        <h4 class="font-semibold text-gray-800">📋 Daftar Fitur Website</h4>
+        <div id="features-list" class="space-y-3">
+         <!-- Features will be loaded here -->
+        </div>
+       </div>
+      </div>
+      
+      <!-- Dynamic Content Tabs -->
+      <div id="dynamic-content-tabs">
+       <!-- Dynamic content tabs will be generated here -->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main id="main-content">
+   <!-- Hero Section -->
+   <section id="home" class="gradient-bg text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+     <div class="hero-animation mb-8">
+      <h2 id="welcome-title" class="text-4xl md:text-6xl font-bold mb-6">Selamat Datang di SDN 008 Purnama</h2>
+      <p id="welcome-text" class="text-xl md:text-2xl mb-8 opacity-90">Sekolah yang mengutamakan pendidikan berkualitas dengan lingkungan yang ramah dan kondusif untuk belajar</p>
+     </div>
+     <!-- Quick Action Buttons -->
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 max-w-4xl mx-auto">
+      <button class="pulse-button bg-white text-blue-600 px-6 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors"> 📝 PPDB 2026 </button>
+      <button class="pulse-button bg-white text-blue-600 px-6 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors"> 📢 Pengumuman </button>
+      <button class="pulse-button bg-white text-blue-600 px-6 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors"> 📞 Kontak </button>
+     </div>
+    </div>
+   </section>
+   
+   <!-- Dynamic Sections Container -->
+   <div id="dynamic-sections">
+    <!-- Sections will be dynamically created based on features -->
+   </div>
+   
+   <!-- Contact Section (Always present) -->
+   <section id="kontak" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+     <div class="text-center mb-12 section-fade">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">Hubungi Kami</h2>
+      <div class="w-24 h-1 bg-yellow-400 mx-auto"></div>
+     </div>
+     
+     <div class="grid md:grid-cols-2 gap-8">
+      <!-- Contact Info -->
+      <div class="section-fade">
+       <div class="bg-blue-50 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-blue-600 mb-4">Informasi Kontak</h3>
+        <div class="space-y-4">
+         <div class="flex items-start space-x-3">
+          <span class="text-2xl">📍</span>
+          <div>
+           <h4 class="font-semibold">Alamat</h4>
+           <p id="contact-address" class="text-gray-600">Jl. Dr. Wahidin, Purnama, Kecamatan Dumai Barat</p>
+          </div>
+         </div>
+         <div class="flex items-start space-x-3">
+          <span class="text-2xl">✉️</span>
+          <div>
+           <h4 class="font-semibold">Email</h4>
+           <p id="contact-email" class="text-gray-600">sdn008purnama@gmail.com</p>
+          </div>
+         </div>
+         <div class="flex items-start space-x-3">
+          <span class="text-2xl">🕒</span>
+          <div>
+           <h4 class="font-semibold">Jam Operasional</h4>
+           <p class="text-gray-600">Senin - Sabtu: 07:30 - 17:00</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      
+      <!-- Contact Form -->
+      <div class="section-fade">
+       <div class="bg-white border border-gray-200 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Kirim Pesan</h3>
+        
+        <!-- --- MODIFIED: Form points to WhatsApp --- -->
+        <form id="whatsapp-form" class="space-y-4">
+         
+         <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+          <input type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+         </div>
+         <!-- --- TAMBAHAN: Field Email --- -->
+         <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Anda</label>
+          <input type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="email@anda.com" required>
+         </div>
+         <!-- --- Akhir Tambahan --- -->
+         <div>
+          <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Pesan</label> <textarea id="message" name="message" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+         </div>
+         <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"> Kirim Pesan via WhatsApp </button>
+        </form>
+        <!-- --- END MODIFICATION --- -->
+        
+       </div>
+      </div>
+     </div>
+     
+     <!-- Location Map Placeholder -->
+     <div class="mt-12 section-fade">
+      <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+       <div class="text-center">
+        <span class="text-4xl">🗺️</span>
+        <p class="text-gray-600 mt-2">Peta Lokasi SDN 008 Purnama</p>
+        <p class="text-gray-500 text-sm">Jl. Dr. Wahidin, Purnama, Kecamatan Dumai Barat</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="gradient-bg text-white py-12">
+   <div class="container mx-auto px-4">
+    <div class="grid md:grid-cols-3 gap-8">
+     <!-- Footer Column 1: About -->
+     <div>
+      <div class="flex items-center space-x-3 mb-4">
+       <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+        <span class="text-2xl">🏫</span>
+       </div>
+       <div>
+        <h3 class="text-xl font-bold">SDN 008 Purnama</h3>
+        <p class="text-sm opacity-90">Mencerdaskan Generasi Bangsa</p>
+       </div>
+      </div>
+      <p class="text-sm opacity-90">Sekolah Dasar Negeri yang berkomitmen memberikan pendidikan berkualitas dengan mengintegrasikan nilai-nilai karakter dan inovasi.</p>
+     </div>
+     
+     <!-- Footer Column 2: Contact -->
+     <div>
+      <h4 class="font-semibold mb-4">Informasi Kontak</h4>
+      <div class="space-y-2 text-sm opacity-90">
+       <p>📍 Jl. Dr. Wahidin, Purnama, Kecamatan Dumai Barat</p>
+       <p>✉️ sdn008purnama@gmail.com</p>
+      </div>
+     </div>
+     
+     <!-- Footer Column 3: Operational Hours -->
+     <div>
+      <h4 class="font-semibold mb-4">Jam Operasional</h4>
+      <div class="space-y-2 text-sm opacity-90">
+       <p>Senin - Sabtu: 07:30 - 17:00</p>
+       <p>Minggu: Libur</p>
+      </div>
+     </div>
+    </div>
+    
+    <!-- Footer Bottom Bar -->
+    <div class="border-t border-white/20 mt-8 pt-8 text-center">
+     <div class="flex justify-center items-center space-x-4 mb-4">
+      <p class="text-sm opacity-90">SDN 008 Purnama</p>
+      <button id="admin-btn" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs font-medium transition-colors"> ⚙️ Admin </button>
+     </div>
+    </div>
+   </div>
+  </footer>
+  
+  <!-- Main JavaScript Logic -->
+  <script>
+        // Configuration object (Defaults, can be changed by admin)
+        const defaultConfig = {
+            school_name: "SDN 008 Purnama",
+            school_tagline: "Mencerdaskan Generasi Bangsa",
+            welcome_title: "Selamat Datang di SDN 008 Purnama",
+            welcome_text: "Sekolah yang mengutamakan pendidikan berkualitas dengan lingkungan yang ramah dan kondusif untuk belajar",
+            school_address: "Jl. Dr. Wahidin, Purnama, Kecamatan Dumai Barat",
+            school_phone: "",
+            school_email: "sdn008purnama@gmail.com"
+        };
+
+        // Default features configuration
+        const defaultFeatures = [
+            { id: 'profil', name: 'Profil Sekolah', icon: '🏫', order: 1, active: true, description: 'Informasi tentang sekolah, visi, misi' },
+            { id: 'guru', name: 'Guru & Staf', icon: '👨‍🏫', order: 2, active: true, description: 'Data guru dan tenaga kependidikan' },
+            { id: 'kurikulum', name: 'Kurikulum', icon: '📚', order: 3, active: true, description: 'Struktur kurikulum dan mata pelajaran' },
+            { id: 'kegiatan', name: 'Kegiatan Siswa', icon: '🎯', order: 4, active: true, description: 'Ekstrakurikuler dan kegiatan siswa' },
+            { id: 'galeri', name: 'Galeri', icon: '📸', order: 5, active: true, description: 'Foto dan video kegiatan sekolah' },
+            { id: 'ppdb', name: 'PPDB', icon: '📝', order: 6, active: true, description: 'Penerimaan Peserta Didik Baru' },
+            { id: 'pengumuman', name: 'Pengumuman', icon: '📢', order: 7, active: true, description: 'Pengumuman dan berita terbaru' },
+            { id: 'fasilitas', name: 'Fasilitas', icon: '🏢', order: 8, active: true, description: 'Fasilitas dan sarana sekolah' }
+        ];
+
+        // Global variables
+        let allData = [];
+        let allFeatures = [...defaultFeatures];
+        let currentEditingItem = null;
+        let currentEditingFeature = null;
+        let currentTab = 'dashboard';
+        let isAdminLoggedIn = false;
+        
+        // Admin credentials (simple, for demo purposes)
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'sdn008'
+        };
+
+        // --- Local Storage Functions ---
+        
+        /**
+         * Saves data to localStorage.
+         * @param {string} key - The key to save data under.
+         * @param {any} data - The data to save.
+         */
+        function saveToLocalStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
+        }
+
+        /**
+         * Loads data from localStorage.
+         * @param {string} key - The key to load data from.
+         * @param {any} [defaultValue=[]] - The default value if data doesn't exist.
+         * @returns {any} The loaded data or default value.
+         */
+        function loadFromLocalStorage(key, defaultValue = []) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                return defaultValue;
+            }
+        }
+
+        // --- Initialization ---
+
+        /**
+         * Initializes the website data and structure on load.
+         */
+        function initializeData() {
+            allData = loadFromLocalStorage('sdn008_data', []);
+            allFeatures = loadFromLocalStorage('sdn008_features', defaultFeatures);
+            
+            // Generate website structure
+            generateNavigation();
+            generateSections();
+            generateAdminTabs();
+            updateDashboard();
+            renderCurrentTab();
+        }
+
+        // --- Website Structure Generation ---
+
+        /**
+         * Generates the main navigation menus (desktop and mobile).
+         */
+        function generateNavigation() {
+            const activeFeatures = allFeatures.filter(f => f.active).sort((a, b) => a.order - b.order);
+            
+            // Desktop navigation
+            const desktopNav = document.getElementById('main-navigation');
+            desktopNav.innerHTML = `
+                <a href="#home" class="nav-item px-4 py-2 text-sm font-medium">Home</a>
+                ${activeFeatures.map(feature => 
+                    `<a href="#${feature.id}" class="nav-item px-4 py-2 text-sm font-medium">${feature.icon} ${feature.name}</a>`
+                ).join('')}
+                <a href="#kontak" class="nav-item px-4 py-2 text-sm font-medium">📞 Kontak</a>
+            `;
+
+            // Mobile navigation
+            const mobileNav = document.getElementById('mobile-navigation');
+            mobileNav.innerHTML = `
+                <a href="#home" class="nav-item px-4 py-2 text-sm font-medium">Home</a>
+                ${activeFeatures.map(feature => 
+                    `<a href="#${feature.id}" class="nav-item px-4 py-2 text-sm font-medium">${feature.icon} ${feature.name}</a>`
+                ).join('')}
+                <a href="#kontak" class="nav-item px-4 py-2 text-sm font-medium">📞 Kontak</a>
+            `;
+        }
+
+        /**
+         * Generates the dynamic content sections on the main page.
+         */
+        function generateSections() {
+            const activeFeatures = allFeatures.filter(f => f.active).sort((a, b) => a.order - b.order);
+            const sectionsContainer = document.getElementById('dynamic-sections');
+            
+            sectionsContainer.innerHTML = activeFeatures.map(feature => `
+                <section id="${feature.id}" class="py-16 ${feature.order % 2 === 0 ? 'bg-gray-50' : 'bg-white'}">
+                    <div class="container mx-auto px-4">
+                        <div class="text-center mb-12 section-fade">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">${feature.icon} ${feature.name}</h2>
+                            <div class="w-24 h-1 bg-yellow-400 mx-auto"></div>
+                        </div>
+                        
+                        <div id="${feature.id}-content" class="section-content">
+                            <div class="text-center py-12">
+                                <p class="text-gray-500">Data ${feature.name.toLowerCase()} akan ditampilkan setelah admin menambahkan data.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `).join('');
+
+            // Update content for each section
+            activeFeatures.forEach(feature => {
+                updateSectionContent(feature.id);
+            });
+        }
+
+        /**
+         * Generates tabs and content areas inside the Admin Panel.
+         */
+        function generateAdminTabs() {
+            const activeFeatures = allFeatures.filter(f => f.active).sort((a, b) => a.order - b.order);
+            
+            // Generate tab buttons
+            const tabsContainer = document.getElementById('dynamic-admin-tabs');
+            tabsContainer.innerHTML = activeFeatures.map(feature => 
+                `<button class="admin-tab-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium" data-tab="${feature.id}">
+                    ${feature.icon} ${feature.name}
+                </button>`
+            ).join('');
+
+            // Generate tab content areas
+            const contentContainer = document.getElementById('dynamic-content-tabs');
+            contentContainer.innerHTML = activeFeatures.map(feature => `
+                <div id="tab-${feature.id}" class="admin-tab-content hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold">Kelola ${feature.name}</h3>
+                        <button id="add-${feature.id}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            ➕ Tambah ${feature.name}
+                        </button>
+                    </div>
+                    
+                    <!-- Form for adding/editing content -->
+                    <div id="${feature.id}-form" class="bg-gray-50 p-4 rounded-lg mb-4 hidden">
+                        <h4 class="font-semibold mb-3">Form ${feature.name}</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+                                <input type="text" id="${feature.id}-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan judul">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                                <input type="text" id="${feature.id}-category" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan kategori">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">📸 Gambar (Opsional)</label>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">🔗 URL Gambar dari Internet</label>
+                                    <input type="url" id="${feature.id}-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://example.com/gambar.jpg">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">📁 Upload dari Galeri/Perangkat</label>
+                                    <input type="file" id="${feature.id}-file" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div id="${feature.id}-image-preview" class="hidden">
+                                    <img id="${feature.id}-preview-img" src="" alt="Preview" class="w-full h-32 object-cover rounded border">
+                                    <button type="button" id="${feature.id}-remove-image" class="mt-2 text-red-600 hover:text-red-800 text-sm">🗑️ Hapus Gambar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Konten</label>
+                            <textarea id="${feature.id}-content" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tulis konten..."></textarea>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button id="save-${feature.id}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                💾 Simpan
+                            </button>
+                            <button id="cancel-${feature.id}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                                ❌ Batal
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- List of content -->
+                    <div id="${feature.id}-list" class="space-y-3">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners for new tabs
+            setupTabEventListeners();
+        }
+
+        /**
+         * Sets up event listeners for dynamically generated admin tabs.
+         */
+        function setupTabEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+
+            // Add/Save/Cancel buttons for each feature
+            allFeatures.filter(f => f.active).forEach(feature => {
+                const addBtn = document.getElementById(`add-${feature.id}`);
+                const saveBtn = document.getElementById(`save-${feature.id}`);
+                const cancelBtn = document.getElementById(`cancel-${feature.id}`);
+
+                if (addBtn) addBtn.addEventListener('click', () => showForm(feature.id));
+                if (saveBtn) saveBtn.addEventListener('click', () => saveItem(feature.id));
+                if (cancelBtn) cancelBtn.addEventListener('click', () => {
+                    hideForm(feature.id);
+                    resetForm(feature.id);
+                    currentEditingItem = null;
+                });
+
+                // Setup image upload listeners
+                setupImageUpload(feature.id);
+            });
+        }
+
+        // --- Content Rendering ---
+
+        /**
+         * Updates the content of a specific section on the main page.
+         * @param {string} featureId - The ID of the feature section to update.
+         */
+        function updateSectionContent(featureId) {
+            const featureData = allData.filter(item => item.type === featureId);
+            const contentContainer = document.getElementById(`${featureId}-content`);
+            
+            if (!contentContainer) return;
+
+            // Show placeholder if no data
+            if (featureData.length === 0) {
+                contentContainer.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-gray-500">Data ${featureId} akan ditampilkan setelah admin menambahkan data.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate content based on feature type
+            switch (featureId) {
+                case 'guru':
+                    contentContainer.innerHTML = `
+                        <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            ${featureData.map(item => `
+                                <div class="card-hover bg-white p-6 rounded-lg shadow-md text-center">
+                                    ${item.image ? 
+                                        `<img src="${item.image}" alt="${item.title}" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                         <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-4 items-center justify-center" style="display: none;">
+                                             <span class="text-3xl">👨‍🏫</span>
+                                         </div>` :
+                                        `<div class="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                             <span class="text-3xl">👨‍🏫</span>
+                                         </div>`
+                                    }
+                                    <h3 class="font-semibold text-gray-800">${item.title}</h3>
+                                    <p class="text-blue-600 text-sm">${item.category}</p>
+                                    <p class="text-gray-500 text-xs">${item.content}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    break;
+
+                default: // Default card layout
+                    contentContainer.innerHTML = `
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${featureData.map(item => `
+                                <div class="card-hover bg-white border border-gray-200 p-6 rounded-lg">
+                                    ${item.image ? `<img src="${item.image}" alt="${item.title}" class="w-full h-32 object-cover rounded mb-3" onerror="this.style.display='none';">` : ''}
+                                    <div class="flex items-center space-x-2 mb-3">
+                                        ${item.category ? `<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-semibold">${item.category}</span>` : ''}
+                                        ${item.date ? `<span class="text-gray-500 text-sm">${formatDate(item.date)}</span>` : ''}
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800 mb-2">${item.title}</h3>
+                                    <p class="text-gray-600 text-sm">${item.content}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+            }
+        }
+
+        // --- Feature Management (Admin) ---
+
+        /**
+         * Renders the list of features in the 'Kelola Fitur' tab.
+         */
+        function renderFeaturesList() {
+            const container = document.getElementById('features-list');
+            if (!container) return;
+
+            const sortedFeatures = [...allFeatures].sort((a, b) => a.order - b.order);
+
+            container.innerHTML = sortedFeatures.map(feature => `
+                <div class="feature-item ${!feature.active ? 'disabled' : ''} bg-white border border-gray-200 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">${feature.icon}</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">${feature.name}</h4>
+                                <p class="text-gray-600 text-sm">${feature.description}</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs text-gray-500">Urutan: ${feature.order}</span>
+                                    <span class="text-xs px-2 py-1 rounded ${feature.active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
+                                        ${feature.active ? 'Aktif' : 'Nonaktif'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="toggleFeature('${feature.id}')" class="px-3 py-1 rounded text-sm font-medium transition-colors ${feature.active ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                                ${feature.active ? '⏸️ Nonaktifkan' : '▶️ Aktifkan'}
+                            </button>
+                            <button onclick="editFeature('${feature.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-sm font-medium transition-colors">
+                                ✏️ Edit
+                            </button>
+                            <button onclick="deleteFeature('${feature.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm font-medium transition-colors">
+                                🗑️ Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * Saves or updates a feature.
+         */
+        function saveFeature() {
+            const name = document.getElementById('feature-name').value.trim();
+            const icon = document.getElementById('feature-icon').value.trim();
+            const id = document.getElementById('feature-id').value.trim().toLowerCase().replace(/\s+/g, '-');
+            const order = parseInt(document.getElementById('feature-order').value) || 1;
+            const description = document.getElementById('feature-description').value.trim();
+            const active = document.getElementById('feature-active').checked;
+
+            if (!name || !icon || !id) {
+                showMessage('Nama fitur, ikon, dan ID harus diisi!', 'error');
+                return;
+            }
+
+            // Check if ID already exists (except when editing)
+            const existingFeature = allFeatures.find(f => f.id === id);
+            if (existingFeature && (!currentEditingFeature || currentEditingFeature.id !== id)) {
+                showMessage('ID fitur sudah digunakan! Gunakan ID yang berbeda.', 'error');
+                return;
+            }
+
+            const featureData = {
+                id,
+                name,
+                icon,
+                order,
+                description,
+                active
+            };
+
+            if (currentEditingFeature) {
+                // Update existing feature
+                const index = allFeatures.findIndex(f => f.id === currentEditingFeature.id);
+                if (index !== -1) {
+                    allFeatures[index] = { ...allFeatures[index], ...featureData };
+                }
+                showMessage('Fitur berhasil diperbarui!', 'success');
+            } else {
+                // Add new feature
+                allFeatures.push(featureData);
+                showMessage('Fitur baru berhasil ditambahkan!', 'success');
+            }
+
+            // Save to localStorage
+            saveToLocalStorage('sdn008_features', allFeatures);
+
+            // Regenerate website structure
+            generateNavigation();
+            generateSections();
+            generateAdminTabs();
+            
+            // Update displays
+            renderFeaturesList();
+            updateDashboard();
+
+            // Reset form
+            hideFeatureForm();
+            resetFeatureForm();
+            currentEditingFeature = null;
+        }
+
+        /**
+         * Populates the feature form for editing.
+         * @param {string} featureId - The ID of the feature to edit.
+         */
+        function editFeature(featureId) {
+            const feature = allFeatures.find(f => f.id === featureId);
+            if (!feature) return;
+
+            currentEditingFeature = feature;
+
+            // Fill form
+            document.getElementById('feature-name').value = feature.name;
+            document.getElementById('feature-icon').value = feature.icon;
+            document.getElementById('feature-id').value = feature.id;
+            document.getElementById('feature-order').value = feature.order;
+            document.getElementById('feature-description').value = feature.description;
+            document.getElementById('feature-active').checked = feature.active;
+
+            // Show form
+            showFeatureForm();
+            document.getElementById('save-feature').textContent = '💾 Update Fitur';
+        }
+
+        /**
+         * Deletes a feature after confirmation.
+         * @param {string} featureId - The ID of the feature to delete.
+         */
+        function deleteFeature(featureId) {
+            const feature = allFeatures.find(f => f.id === featureId);
+            if (!feature) return;
+
+            // Show confirmation dialog
+            showConfirmationModal(
+                'Konfirmasi Hapus Fitur',
+                `Apakah Anda yakin ingin menghapus fitur: "${feature.icon} ${feature.name}"?`,
+                '⚠️ Semua data dalam fitur ini juga akan terhapus!',
+                () => {
+                    // Remove feature
+                    allFeatures = allFeatures.filter(f => f.id !== featureId);
+                    
+                    // Remove related data
+                    allData = allData.filter(item => item.type !== featureId);
+                    
+                    // Save to localStorage
+                    saveToLocalStorage('sdn008_features', allFeatures);
+                    saveToLocalStorage('sdn008_data', allData);
+
+                    // Regenerate website
+                    generateNavigation();
+                    generateSections();
+                    generateAdminTabs();
+                    renderFeaturesList();
+                    updateDashboard();
+                    
+                    showMessage('Fitur berhasil dihapus!', 'success');
+                }
+            );
+        }
+
+        /**
+         * Toggles the active state of a feature.
+         * @param {string} featureId - The ID of the feature to toggle.
+         */
+        function toggleFeature(featureId) {
+            const feature = allFeatures.find(f => f.id === featureId);
+            if (!feature) return;
+
+            feature.active = !feature.active;
+            
+            // Save to localStorage
+            saveToLocalStorage('sdn008_features', allFeatures);
+
+            // Regenerate website structure
+            generateNavigation();
+            generateSections();
+            generateAdminTabs();
+            
+            // Update displays
+            renderFeaturesList();
+            updateDashboard();
+
+            showMessage(`Fitur ${feature.name} ${feature.active ? 'diaktifkan' : 'dinonaktifkan'}!`, 'success');
+        }
+
+        // --- Feature Form UI ---
+        function showFeatureForm() {
+            document.getElementById('feature-form').classList.remove('hidden');
+        }
+
+        function hideFeatureForm() {
+            document.getElementById('feature-form').classList.add('hidden');
+        }
+
+        function resetFeatureForm() {
+            document.getElementById('feature-name').value = '';
+            document.getElementById('feature-icon').value = '';
+            document.getElementById('feature-id').value = '';
+            document.getElementById('feature-order').value = '';
+            document.getElementById('feature-description').value = '';
+            document.getElementById('feature-active').checked = true;
+            document.getElementById('save-feature').textContent = '💾 Simpan Fitur';
+        }
+
+        // --- Admin Panel Dashboard & Navigation ---
+
+        /**
+         * Updates the statistics on the admin dashboard.
+         */
+        function updateDashboard() {
+            document.getElementById('total-data').textContent = allData.length;
+            document.getElementById('active-features').textContent = allFeatures.filter(f => f.active).length;
+            
+            const lastUpdate = allData.length > 0 ? 
+                formatDate(Math.max(...allData.map(item => new Date(item.date || Date.now())))) : 
+                'Belum ada data';
+            document.getElementById('last-update').textContent = lastUpdate;
+        }
+
+        /**
+         * Opens the Admin Panel (shows login or panel).
+         */
+        function openAdminPanel() {
+            if (!isAdminLoggedIn) {
+                showLoginModal();
+            } else {
+                document.getElementById('admin-modal').classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Closes the Admin Panel.
+         */
+        function closeAdminPanel() {
+            document.getElementById('admin-modal').classList.add('hidden');
+            resetAllForms();
+        }
+
+        /**
+         * Shows the login modal.
+         */
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('admin-username').focus();
+        }
+
+        /**
+         * Hides the login modal.
+         */
+        function hideLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-form').reset();
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        /**
+         * Attempts to log in the admin.
+         * @param {string} username - The entered username.
+         * @param {string} password - The entered password.
+         */
+        function attemptLogin(username, password) {
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                isAdminLoggedIn = true;
+                hideLoginModal();
+                document.getElementById('admin-modal').classList.remove('hidden');
+                
+                // Update admin button state
+                const adminBtn = document.getElementById('admin-btn');
+                adminBtn.innerHTML = '⚙️ Admin Panel <span class="text-xs">(Logged In)</span>';
+                adminBtn.classList.add('bg-green-600/20', 'hover:bg-green-600/30');
+                adminBtn.classList.remove('bg-white/20', 'hover:bg-white/30');
+                
+                showMessage('Login berhasil! Selamat datang Admin.', 'success');
+                return true;
+            } else {
+                // Show login error
+                document.getElementById('login-error').classList.remove('hidden');
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password').focus();
+                return false;
+            }
+        }
+
+        /**
+         * Logs out the admin.
+         */
+        function logout() {
+            isAdminLoggedIn = false;
+            closeAdminPanel();
+            
+            // Reset admin button state
+            const adminBtn = document.getElementById('admin-btn');
+            adminBtn.innerHTML = '⚙️ Admin Panel';
+            adminBtn.classList.remove('bg-green-600/20', 'hover:bg-green-600/30');
+            adminBtn.classList.add('bg-white/20', 'hover:bg-white/30');
+            
+            showMessage('Logout berhasil. Terima kasih!', 'success');
+        }
+
+        /**
+         * Switches the visible tab in the admin panel.
+         * @param {string} tabName - The data-tab value of the tab to switch to.
+         */
+        function switchTab(tabName) {
+            // Update tab buttons style
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                activeBtn.classList.add('active', 'bg-blue-600', 'text-white');
+            }
+
+            // Hide all tab content
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show active tab content
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+            }
+            
+            currentTab = tabName;
+            renderCurrentTab();
+        }
+
+        /**
+         * Renders the content for the currently active tab.
+         */
+        function renderCurrentTab() {
+            if (currentTab === 'dashboard') {
+                updateDashboard();
+            } else if (currentTab === 'kelola-fitur') {
+                renderFeaturesList();
+            } else {
+                // Render content for a specific feature
+                const filteredData = allData.filter(item => item.type === currentTab);
+                renderTabContent(currentTab, filteredData);
+            }
+        }
+
+        /**
+         * Renders the list of data items for a specific feature tab.
+         * @param {string} tabType - The feature ID (e.g., 'guru', 'berita').
+         * @param {Array} data - The array of data items for this feature.
+         */
+        function renderTabContent(tabType, data) {
+            const container = document.getElementById(`${tabType}-list`);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-8">Belum ada data ${tabType}. Klik "Tambah ${tabType}" untuk menambah.</p>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
+                <div class="bg-white border border-gray-200 p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center space-x-2">
+                            ${item.category ? `<span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-semibold">${item.category}</span>` : ''}
+                            ${item.date ? `<span class="text-gray-500 text-sm">${formatDate(item.date)}</span>` : ''}
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editItem('${item.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-sm font-medium transition-colors">✏️ Edit</button>
+                            <button onclick="deleteItem('${item.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm font-medium transition-colors">🗑️ Hapus</button>
+                        </div>
+                    </div>
+                    ${item.image ? `<img src="${item.image}" alt="${item.title}" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none';">` : ''}
+                    <h4 class="font-semibold text-gray-800 mb-1">${item.title}</h4>
+                    <p class="text-gray-600 text-sm">${item.content}</p>
+                </div>
+            `).join('');
+
+            // Update website section as well
+            updateSectionContent(tabType);
+        }
+
+        // --- CRUD Operations for Content Items ---
+
+        /**
+         * Saves or updates a content item (e.g., a guru, a news article).
+         * @param {string} type - The feature ID (e.g., 'guru').
+         */
+        async function saveItem(type) {
+            const titleField = document.getElementById(`${type}-title`);
+            const categoryField = document.getElementById(`${type}-category`);
+            const contentField = document.getElementById(`${type}-content`);
+
+            if (!titleField || !titleField.value.trim()) {
+                showMessage('Judul tidak boleh kosong!', 'error');
+                return;
+            }
+
+            // Show loading state on save button
+            const saveBtn = document.getElementById(`save-${type}`);
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '⏳ Menyimpan...';
+            saveBtn.disabled = true;
+
+            try {
+                // Get image data (either from URL or file upload)
+                const imageData = await getImageData(type);
+
+                const itemData = {
+                    id: currentEditingItem ? currentEditingItem.id : generateId(),
+                    type: type,
+                    title: titleField.value.trim(),
+                    category: categoryField ? categoryField.value : '',
+                    content: contentField ? contentField.value.trim() : '',
+                    image: imageData,
+                    date: new Date().toISOString(),
+                    status: 'active'
+                };
+
+                if (currentEditingItem) {
+                    // Update existing item
+                    const index = allData.findIndex(item => item.id === currentEditingItem.id);
+                    if (index !== -1) {
+                        allData[index] = itemData;
+                    }
+                    showMessage('Data berhasil diperbarui!', 'success');
+                } else {
+                    // Add new item
+                    allData.push(itemData);
+                    showMessage('Data berhasil disimpan!', 'success');
+                }
+
+                // Save to localStorage
+                saveToLocalStorage('sdn008_data', allData);
+
+                // Reset UI
+                hideForm(type);
+                resetForm(type);
+                currentEditingItem = null;
+                renderCurrentTab();
+                updateDashboard();
+
+            } catch (error) {
+                showMessage('Terjadi kesalahan. Silakan coba lagi.', 'error');
+            } finally {
+                // Restore save button state
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        /**
+         * Populates the content form for editing an item.
+         * @param {string} itemId - The ID of the item to edit.
+         */
+        async function editItem(itemId) {
+            const item = allData.find(item => item.id === itemId);
+            if (!item) return;
+
+            currentEditingItem = item;
+            
+            // Fill form fields
+            document.getElementById(`${item.type}-title`).value = item.title;
+            if (document.getElementById(`${item.type}-category`)) {
+                document.getElementById(`${item.type}-category`).value = item.category;
+            }
+            if (document.getElementById(`${item.type}-content`)) {
+                document.getElementById(`${item.type}-content`).value = item.content;
+            }
+            
+            // Handle image preview
+            const imageField = document.getElementById(`${item.type}-image`);
+            const fileField = document.getElementById(`${item.type}-file`);
+            const preview = document.getElementById(`${item.type}-image-preview`);
+            const previewImg = document.getElementById(`${item.type}-preview-img`);
+            
+            if (imageField && item.image) {
+                if (item.image.startsWith('data:')) {
+                    // Image is base64 (from file upload)
+                    fileField && (fileField.value = '');
+                    imageField.value = '';
+                    if (preview && previewImg) {
+                        previewImg.src = item.image;
+                        preview.classList.remove('hidden');
+                    }
+                } else {
+                    // Image is a URL
+                    imageField.value = item.image;
+                    fileField && (fileField.value = '');
+                    if (preview && previewImg) {
+                        previewImg.src = item.image;
+                        preview.classList.remove('hidden');
+                    }
+                }
+            }
+            
+            // Show form and update button text
+            showForm(item.type);
+            document.getElementById(`save-${item.type}`).textContent = '💾 Update Data';
+            document.getElementById(`${item.type}-form`).scrollIntoView({ behavior: 'smooth' });
+            
+            showMessage(`Data ${item.type} siap untuk diedit!`, 'success');
+        }
+
+        /**
+         * Deletes a content item after confirmation.
+         * @param {string} itemId - The ID of the item to delete.
+         */
+        async function deleteItem(itemId) {
+            const item = allData.find(item => item.id === itemId);
+            if (!item) return;
+
+            // Show confirmation dialog
+            showConfirmationModal(
+                'Konfirmasi Hapus',
+                `Apakah Anda yakin ingin menghapus data: "${item.title}"?`,
+                null,
+                () => {
+                    allData = allData.filter(dataItem => dataItem.id !== itemId);
+                    saveToLocalStorage('sdn008_data', allData);
+                    
+                    renderCurrentTab();
+                    updateDashboard();
+                    showMessage(`Data berhasil dihapus!`, 'success');
+                }
+            );
+        }
+
+        // --- Image Upload Handling ---
+
+        /**
+         * Sets up event listeners for image file/URL inputs.
+         * @param {string} type - The feature ID.
+         */
+        function setupImageUpload(type) {
+            const fileInput = document.getElementById(`${type}-file`);
+            const urlInput = document.getElementById(`${type}-image`);
+            const preview = document.getElementById(`${type}-image-preview`);
+            const previewImg = document.getElementById(`${type}-preview-img`);
+            const removeBtn = document.getElementById(`${type}-remove-image`);
+
+            if (!fileInput || !urlInput || !preview || !previewImg || !removeBtn) return;
+
+            // Handle file input change
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    urlInput.value = ''; // Clear URL input
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle URL input change
+            urlInput.addEventListener('input', function(e) {
+                const url = e.target.value.trim();
+                if (url) {
+                    fileInput.value = ''; // Clear file input
+                    previewImg.src = url;
+                    preview.classList.remove('hidden');
+                } else {
+                    preview.classList.add('hidden');
+                }
+            });
+
+            // Handle remove image button
+            removeBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                urlInput.value = '';
+                preview.classList.add('hidden');
+                previewImg.src = '';
+            });
+        }
+
+        /**
+         * Gets the image data (base64 or URL) from the form.
+         * @param {string} type - The feature ID.
+         * @returns {Promise<string>} A promise that resolves with the image data.
+         */
+        function getImageData(type) {
+            const fileInput = document.getElementById(`${type}-file`);
+            const urlInput = document.getElementById(`${type}-image`);
+            
+            if (fileInput && fileInput.files[0]) {
+                // Return base64 encoded string
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            } else if (urlInput && urlInput.value.trim()) {
+                // Return URL string
+                return Promise.resolve(urlInput.value.trim());
+            }
+            
+            // Return empty string if no image
+            return Promise.resolve('');
+        }
+
+        // --- Form UI Management ---
+        function showForm(type) {
+            const form = document.getElementById(`${type}-form`);
+            if (form) {
+                form.classList.remove('hidden');
+                setupImageUpload(type); // Re-setup listeners just in case
+            }
+        }
+
+        function hideForm(type) {
+            const form = document.getElementById(`${type}-form`);
+            if (form) {
+                form.classList.add('hidden');
+            }
+        }
+
+        function resetForm(type) {
+            const titleField = document.getElementById(`${type}-title`);
+            const categoryField = document.getElementById(`${type}-category`);
+            const contentField = document.getElementById(`${type}-content`);
+            const imageField = document.getElementById(`${type}-image`);
+            const fileField = document.getElementById(`${type}-file`);
+            const preview = document.getElementById(`${type}-image-preview`);
+            const saveBtn = document.getElementById(`save-${type}`);
+
+            if (titleField) titleField.value = '';
+            if (categoryField) categoryField.value = '';
+            if (contentField) contentField.value = '';
+            if (imageField) imageField.value = '';
+            if (fileField) fileField.value = '';
+            if (preview) preview.classList.add('hidden');
+            if (saveBtn) saveBtn.textContent = '💾 Simpan';
+        }
+
+        /**
+         * Hides and resets all content and feature forms.
+         */
+        function resetAllForms() {
+            allFeatures.forEach(feature => {
+                hideForm(feature.id);
+                resetForm(feature.id);
+            });
+            hideFeatureForm();
+            resetFeatureForm();
+            currentEditingItem = null;
+            currentEditingFeature = null;
+        }
+
+        // --- Utility Functions ---
+
+        /**
+         * Generates a simple unique ID.
+         * @returns {string} A unique ID string.
+         */
+        function generateId() {
+            return 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        /**
+         * Shows a toast message.
+         * @param {string} message - The message to display.
+         * @param {'success'|'error'} type - The type of message.
+         */
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+            }`;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (document.body.contains(messageDiv)) {
+                    document.body.removeChild(messageDiv);
+                }
+            }, 3000);
+        }
+        
+        /**
+         * Displays a generic confirmation modal.
+         * @param {string} title - The modal title.
+         * @param {string} message - The main confirmation message.
+         * @param {string|null} warning - An optional warning message.
+         * @param {Function} onConfirm - The callback function to execute on confirmation.
+         */
+        function showConfirmationModal(title, message, warning, onConfirm) {
+            const confirmDiv = document.createElement('div');
+            confirmDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-red-300 rounded-lg shadow-xl p-6 z-50 max-w-md w-full mx-4';
+            confirmDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="text-4xl mb-4">🗑️</div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${title}</h3>
+                    <p class="text-gray-600 mb-4">${message}</p>
+                    ${warning ? `<p class="text-red-600 text-sm mb-6">${warning}</p>` : '<div class="mb-6"></div>'}
+                    <div class="flex space-x-3">
+                        <button id="confirm-delete-action" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors font-medium">Ya, Hapus</button>
+                        <button id="cancel-delete-action" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors font-medium">Batal</button>
+                    </div>
+                </div>
+            `;
+            
+            const backdrop = document.createElement('div');
+            backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 z-40';
+            document.body.appendChild(backdrop);
+            document.body.appendChild(confirmDiv);
+
+            const closeConfirmation = () => {
+                if(document.body.contains(confirmDiv)) document.body.removeChild(confirmDiv);
+                if(document.body.contains(backdrop)) document.body.removeChild(backdrop);
+            };
+
+            document.getElementById('confirm-delete-action').onclick = () => {
+                onConfirm();
+                closeConfirmation();
+            };
+
+            document.getElementById('cancel-delete-action').onclick = closeConfirmation;
+            backdrop.onclick = closeConfirmation;
+        }
+
+
+        /**
+         * Formats a date string into a localized format.
+         * @param {string} dateString - The ISO date string.
+         * @returns {string} The formatted date.
+         */
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+        }
+
+
+        // --- Main Event Listeners ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the website
+            initializeData();
+
+            // Admin Panel Event Listeners
+            document.getElementById('admin-btn').addEventListener('click', openAdminPanel);
+            document.getElementById('close-admin').addEventListener('click', closeAdminPanel);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+
+            // Login Event Listeners
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('admin-username').value.trim();
+                const password = document.getElementById('admin-password').value;
+                
+                if (username && password) {
+                    attemptLogin(username, password);
+                }
+            });
+
+            document.getElementById('cancel-login').addEventListener('click', hideLoginModal);
+            
+            // Close login modal on backdrop click
+            document.getElementById('login-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideLoginModal();
+                }
+            });
+
+            // Feature management buttons
+            document.getElementById('add-feature').addEventListener('click', showFeatureForm);
+            document.getElementById('save-feature').addEventListener('click', saveFeature);
+            document.getElementById('cancel-feature').addEventListener('click', () => {
+                hideFeatureForm();
+                resetFeatureForm();
+                currentEditingFeature = null;
+            });
+
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Smooth scrolling for navigation links
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('a[href^="#"]')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Close mobile menu on link click
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Intersection Observer for fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.section-fade').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Contact form submission (mock)
+            /* --- DELETED: Mock contact form listener ---
+            document.getElementById('contact-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const button = this.querySelector('button[type="submit"]');
+                const originalText = button.textContent;
+                button.textContent = 'Pesan Terkirim! ✓';
+                button.style.backgroundColor = '#10B981'; // Green color
+                
+                this.reset();
+                
+                // Revert button text after 3 seconds
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '';
+                }, 3000);
+            });
+            */
+
+            // --- BARU: WhatsApp form handler ---
+            document.getElementById('whatsapp-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const phone = '6282169363185';
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+
+                if (!name || !email || !message) {
+                    showMessage('Harap isi semua field (Nama, Email, dan Pesan)!', 'error');
+                    return;
+                }
+
+                // Format pesan untuk WhatsApp
+                const waMessage = `Halo Admin SDN 008 Purnama,\n\nAda pesan baru dari website:\n\n*Nama:* ${name}\n*Email:* ${email}\n*Pesan:*\n${message}`;
+                
+                const encodedMessage = encodeURIComponent(waMessage);
+                const url = `https://wa.me/${phone}?text=${encodedMessage}`;
+                
+                // Buka di tab baru
+                window.open(url, '_blank');
+                
+                // Tampilkan umpan balik di tombol
+                const button = this.querySelector('button[type="submit"]');
+                const originalText = button.textContent;
+                button.textContent = 'Membuka WhatsApp...';
+                button.disabled = true;
+                
+                this.reset();
+                
+                // Kembalikan tombol ke semula setelah 3 detik
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }, 3000);
+            });
+
+            // Quick action buttons in hero section
+            document.querySelectorAll('.pulse-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+                    
+                    if (text.includes('PPDB')) {
+                        const ppdbSection = document.querySelector('#ppdb');
+                        if (ppdbSection) {
+                            ppdbSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    } else if (text.includes('Pengumuman')) {
+                        const pengumumanSection = document.querySelector('#pengumuman');
+                        if (pengumumanSection) {
+                            pengumumanSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    } else if (text.includes('Kontak')) {
+                        document.querySelector('#kontak').scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+ </body>
+</html>
